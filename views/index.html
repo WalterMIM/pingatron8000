@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CineCentral</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/estilos.css">
+</head>
+<body>
+    <header>
+        <!-- Botón Hamburguesa (solo visible en móvil) -->
+        <div class="menu-toggle" id="mobile-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h1>Cine<span>Central</span></h1>
+    </header>
+
+    <main>
+        <nav id="navbar">
+            <div class="nav-container">
+                <a href="#" class="nav-link">Cines</a>
+                <a href="#" class="nav-link">Carteleras</a>
+                <a href="#" class="nav-link">Estrenos</a>
+                <a href="#" class="nav-link">Promos</a>
+            </div>
+        </nav>
+
+        <!-- Carrusel igual que antes -->
+        <section id="carrucel">
+            <div class="carrusel">
+                <button class="btn-nav btn-izq">&#10094;</button>
+                <button class="btn-nav btn-der">&#10095;</button>
+                <div class="carrusel-fotos">
+                    <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Mandalorian">
+                    <img src="/Images/cartelera/backrooms_carrusel.jpg" alt="Backrooms">
+                    <img src="/Images/cartelera/mario_galaxy.jpg" alt="Mario Galaxy">
+                </div> 
+            </div>    
+        </section>
+            
+        <section id="cartelera" class="section">
+            <div class="txt-ico">
+                <h2>Cartelera</h2>
+                <a href="#"><img src="/Images/icons/plus-circle.svg" class="icono"></a>
+            </div>
+
+            <!-- CONTENEDOR DE PELÍCULAS -->
+            <div class="movies-grid">
+                
+                <!-- Película 1 -->
+                <div class="movie-card">
+                    <div class="movie-img">
+                        <img src="/Images/cartelera/mario_galaxy.jpg" alt="Película">
+                        <span class="badge estreno">ESTRENO</span>
+                    </div>
+                    <div class="movie-info">
+                        <h3>Super Mario Galaxy</h3>
+                        <p class="duracion">120 min</p>
+                        <p class="idioma">Español / Subtitulada</p>
+                    </div>
+                </div>
+
+                <!-- Película 2 -->
+                <div class="movie-card">
+                    <div class="movie-img">
+                        <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Película">
+                    </div>
+                    <div class="movie-info">
+                        <h3>The Mandalorian</h3>
+                        <p class="duracion">145 min</p>
+                        <p class="idioma">Español Latino</p>
+                    </div>
+                </div>
+
+                <!-- Película 3 -->
+                <div class="movie-card">
+                    <div class="movie-img">
+                        <img src="/Images/cartelera/backrooms_carrusel.jpg" alt="Película">
+                        <span class="badge estreno">ESTRENO</span>
+                    </div>
+                    <div class="movie-info">
+                        <h3>The Backrooms</h3>
+                        <p class="duracion">95 min</p>
+                        <p class="idioma">Inglés Subtitulado</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <script src="/javascript/script.js"></script>
+</body>
+</html>
