@@ -1,132 +1,35 @@
-<<<<<<< HEAD
-// MENU LATERAL
-const menuBtn = document.getElementById('menuBtn');
-const sidebar = document.getElementById('sidebar');
-
-menuBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
-
-// CARRUSEL
-const tira = document.querySelector('.carrusel-fotos');
-const btns = document.querySelectorAll('.btn-nav');
-let pos = 0;
-
-function mover(direccion) {
-    if (direccion === 'der') {
-        pos = (pos < 2) ? pos + 1 : 0;
-    } else {
-        pos = (pos > 0) ? pos - 1 : 2;
-    }
-    tira.style.transform = `translateX(-${pos * 33.333}%)`;
-}
-
-document.querySelector('.btn-der').addEventListener('click', () => mover('der'));
-document.querySelector('.btn-izq').addEventListener('click', () => mover('izq'));
-
-// Auto-play
-setInterval(() => mover('der'), 5000);
-=======
-/**
- * SELECTORES PARA EL CARRUSEL
- */
-const tira = document.querySelector('.carrusel-fotos');
+// Carrusel
+const tira = document.querySelector('.carousel-tira');
 const btnIzq = document.querySelector('.btn-izq');
 const btnDer = document.querySelector('.btn-der');
+let index = 0;
 
-/**
- * SELECTORES PARA EL MENÚ MÓVIL
- */
-const menuToggle = document.getElementById('mobile-menu');
-const navbar = document.getElementById('navbar');
-const navLinks = document.querySelectorAll('.nav-link');
-
-// Variables de estado
-let posicion = 0; // 0, 1, 2
-let intervalo;
-
-// ==========================================
-// 1. FUNCIONES DEL CARRUSEL
-// ==========================================
-
-function actualizarMovimiento() {
-    // Calculamos el porcentaje: 100 dividido entre 3 fotos = 33.33% cada una
-    const desplazamiento = posicion * (100 / 3);
-    tira.style.transform = `translateX(-${desplazamiento}%)`;
+function mover() {
+    tira.style.transform = `translateX(-${index * 33.333}%)`;
 }
 
-function irSiguiente() {
-    if (posicion < 2) {
-        posicion++;
-    } else {
-        posicion = 0; // Vuelve al inicio
-    }
-    actualizarMovimiento();
-}
-
-function irAnterior() {
-    if (posicion > 0) {
-        posicion--;
-    } else {
-        posicion = 2; // Va a la última
-    }
-    actualizarMovimiento();
-}
-
-// Control del tiempo automático
-function iniciarAuto() {
-    intervalo = setInterval(irSiguiente, 5000); // Cambia cada 5 segundos
-}
-
-function resetReloj() {
-    clearInterval(intervalo);
-    iniciarAuto();
-}
-
-// Eventos de botones carrusel
 btnDer.addEventListener('click', () => {
-    irSiguiente();
-    resetReloj();
+    index = (index < 2) ? index + 1 : 0;
+    mover();
 });
 
 btnIzq.addEventListener('click', () => {
-    irAnterior();
-    resetReloj();
+    index = (index > 0) ? index - 1 : 2;
+    mover();
 });
 
+// Menu Movil
+const menuToggle = document.getElementById('menuToggle');
+const sidebar = document.getElementById('sidebar');
 
-// ==========================================
-// 2. FUNCIONES DEL MENÚ MÓVIL
-// ==========================================
-
-// Abrir/Cerrar menú al tocar la hamburguesa
-menuToggle.addEventListener('click', () => {
-    navbar.classList.toggle('active');
-    
-    // Opcional: Animación del botón hamburguesa
-    menuToggle.classList.toggle('is-active'); 
-});
-
-// Cerrar el menú automáticamente cuando se hace click en un enlace
-// (Muy útil en móviles para que no se quede el menú tapando la pantalla)
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        navbar.classList.remove('active');
+if(menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
     });
-});
+}
 
-// Cerrar menú si se hace click fuera del menú (en el área principal)
-document.addEventListener('click', (event) => {
-    const clickAdentro = navbar.contains(event.target) || menuToggle.contains(event.target);
-    
-    if (!clickAdentro && navbar.classList.contains('active')) {
-        navbar.classList.remove('active');
-    }
-});
-
-
-// ==========================================
-// 3. INICIALIZACIÓN
-// ==========================================
-iniciarAuto();
->>>>>>> e5570584487b126fc7b7f3fc3d421fd6abaf1115
+// Auto-play cada 6 segundos
+setInterval(() => {
+    index = (index < 2) ? index + 1 : 0;
+    mover();
+}, 6000);

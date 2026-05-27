@@ -3,74 +3,96 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>CineCentral</title>
+    <title>CineCentral - Dashboard</title>
     <link rel="stylesheet" href="/css/estilos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Botón Hamburguesa -->
-    <div class="menu-btn" id="menuBtn">
+
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1>Cine<span>Central</span></h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Cines</a></li>
+            <li><a href="#">Carteleras</a></li>
+            <li><a href="#">Estrenos</a></li>
+            <li><a href="#">Promociones</a></li>
+        </ul>
+    </nav>
+
+    <div class="menu-toggle" id="menuToggle">
         <span></span><span></span><span></span>
     </div>
 
-    <header>
-        <h1>Cine<span>Central</span></h1>
-    </header>
-
-    <nav id="sidebar">
-        <div class="nav-links">
-            <a href="#">Cines</a>
-            <a href="#">Carteleras</a>
-            <a href="#">Estrenos</a>
-            <a href="#">Promociones</a>
-        </div>
-    </nav>
-
-    <main>
-        <section class="carrusel-container">
-            <div class="carrusel">
-                <button class="btn-nav btn-izq">&#10094;</button>
-                <button class="btn-nav btn-der">&#10095;</button>
-                <div class="carrusel-fotos">
-                    <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Mandalorian">
-                    <img src="/Images/cartelera/backrooms_carrusel.jpg" alt="Backrooms">
-                    <img src="/Images/cartelera/mario_galaxy.jpg" alt="Mario">
+    <main class="main-content">
+        
+        <section class="carousel-section">
+            <div class="carousel">
+                <div class="carousel-tira">
+                    <img src="/Images/banners/banner1.jpg" alt="Estreno 1">
+                    <img src="/Images/banners/banner2.jpg" alt="Estreno 2">
+                    <img src="/Images/banners/banner3.jpg" alt="Estreno 3">
                 </div>
+                <button class="btn-c btn-izq">&#10094;</button>
+                <button class="btn-c btn-der">&#10095;</button>
             </div>
         </section>
 
-        <section class="section">
-            <div class="title-row">
+        <section class="movies-section">
+            <div class="section-header">
                 <h2>Cartelera</h2>
-                <img src="/Images/icons/plus-circle.svg" class="icono-plus">
+                <img src="/Images/icons/plus-circle.svg" class="add-icon">
             </div>
 
-            <!-- Grilla de Películas -->
             <div class="movies-grid">
-                <!-- Película Ejemplo 1 -->
+                
                 <article class="movie-card">
-                    <div class="movie-poster">
-                        <img src="/Images/cartelera/mario_galaxy.jpg" alt="Poster">
-                        <span class="badge premiere">ESTRENO</span>
+                    <div class="poster-container">
+                        <img src="/Images/posters/mario.jpg" alt="Mario">
+                        <span class="tag-estreno">ESTRENO</span>
                     </div>
-                    <div class="movie-details">
-                        <h3>Super Mario Galaxy</h3>
-                        <p><strong>Duración:</strong> 1h 45min</p>
-                        <p><strong>Idiomas:</strong> ESP / SUB</p>
+                    <div class="movie-info">
+                        <h3>Super Mario Galaxy: La película</h3>
+                        <p class="meta">92 min | Animación</p>
+                        <p class="langs">Español, Inglés Sub</p>
                     </div>
                 </article>
 
-                <!-- Película Ejemplo 2 -->
                 <article class="movie-card">
-                    <div class="movie-poster">
-                        <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Poster">
+                    <div class="poster-container">
+                        <img src="/Images/posters/mandalorian.jpg" alt="Mandalorian">
                     </div>
-                    <div class="movie-details">
+                    <div class="movie-info">
                         <h3>The Mandalorian</h3>
-                        <p><strong>Duración:</strong> 2h 10min</p>
-                        <p><strong>Idiomas:</strong> ESP</p>
+                        <p class="meta">120 min | Acción</p>
+                        <p class="langs">Español Latino</p>
                     </div>
                 </article>
+
+                <article class="movie-card">
+                    <div class="poster-container">
+                        <img src="/Images/posters/backrooms.jpg" alt="Backrooms">
+                        <span class="tag-estreno">ESTRENO</span>
+                    </div>
+                    <div class="movie-info">
+                        <h3>The Backrooms</h3>
+                        <p class="meta">95 min | Terror</p>
+                        <p class="langs">Inglés Subtitulado</p>
+                    </div>
+                </article>
+
+                <article class="movie-card">
+                    <div class="poster-container">
+                        <img src="/Images/posters/avatar.jpg" alt="Avatar">
+                    </div>
+                    <div class="movie-info">
+                        <h3>Avatar: El Camino del Agua</h3>
+                        <p class="meta">192 min | Sci-Fi</p>
+                        <p class="langs">Español / Inglés</p>
+                    </div>
+                </article>
+
             </div>
         </section>
     </main>
