@@ -1,0 +1,107 @@
+:root {
+    --rojo: #e50914;
+    --oscuro: #141414;
+    --gris: #2f2f2f;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--oscuro);
+    color: white;
+    overflow-x: hidden;
+}
+
+header { text-align: center; padding: 20px; }
+header h1 span { color: var(--rojo); }
+
+/* --- NAVEGACION (Sidebar en Movil, Horizontal en PC) --- */
+nav {
+    background-color: var(--rojo);
+    padding: 10px;
+    z-index: 100;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* --- CARRUSEL --- */
+.carrusel-container { width: 100%; display: flex; justify-content: center; }
+.carrusel {
+    width: 90%; max-width: 1000px; aspect-ratio: 16/7;
+    position: relative; overflow: hidden; border-radius: 10px;
+    border: 3px solid var(--rojo);
+}
+.carrusel-fotos { display: flex; width: 300%; height: 100%; transition: 0.5s; }
+.carrusel-fotos img { width: 33.333%; object-fit: cover; }
+.btn-nav {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    background: rgba(0,0,0,0.5); color: white; border: none;
+    padding: 15px; cursor: pointer; z-index: 10;
+}
+.btn-der { right: 0; }
+
+/* --- GRID DE PELICULAS --- */
+.section { padding: 20px; max-width: 1200px; margin: auto; }
+.title-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.icono-plus { width: 30px; filter: invert(1); }
+
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.movie-card {
+    background: var(--gris);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: 0.3s;
+}
+
+.movie-card:hover { transform: scale(1.05); }
+
+.movie-poster { position: relative; width: 100%; aspect-ratio: 2/3; }
+.movie-poster img { width: 100%; height: 100%; object-fit: cover; }
+
+.badge {
+    position: absolute; top: 10px; right: 10px;
+    background: var(--rojo); padding: 4px 8px; font-size: 0.7rem; font-weight: bold;
+}
+
+.movie-details { padding: 15px; }
+.movie-details h3 { font-size: 1rem; margin-bottom: 5px; color: white; }
+.movie-details p { font-size: 0.8rem; color: #ccc; }
+
+/* --- RESPONSIVO (MÓVIL) --- */
+@media (max-width: 768px) {
+    .menu-btn {
+        display: block; position: fixed; top: 20px; left: 20px;
+        z-index: 1000; cursor: pointer;
+    }
+    .menu-btn span {
+        display: block; width: 25px; height: 3px; background: white; margin: 5px;
+    }
+
+    nav {
+        position: fixed; left: -100%; top: 0; width: 250px; height: 100%;
+        background: #000; transition: 0.4s;
+    }
+    nav.active { left: 0; }
+    .nav-links { flex-direction: column; padding: 80px 20px; }
+}
+
+@media (min-width: 769px) {
+    .menu-btn { display: none; }
+}

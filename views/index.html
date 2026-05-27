@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CineCentral</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Botón Hamburguesa -->
+    <div class="menu-btn" id="menuBtn">
+        <span></span><span></span><span></span>
+    </div>
+
+    <header>
+        <h1>Cine<span>Central</span></h1>
+    </header>
+
+    <nav id="sidebar">
+        <div class="nav-links">
+            <a href="#">Cines</a>
+            <a href="#">Carteleras</a>
+            <a href="#">Estrenos</a>
+            <a href="#">Promociones</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="carrusel-container">
+            <div class="carrusel">
+                <button class="btn-nav btn-izq">&#10094;</button>
+                <button class="btn-nav btn-der">&#10095;</button>
+                <div class="carrusel-fotos">
+                    <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Mandalorian">
+                    <img src="/Images/cartelera/backrooms_carrusel.jpg" alt="Backrooms">
+                    <img src="/Images/cartelera/mario_galaxy.jpg" alt="Mario">
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="title-row">
+                <h2>Cartelera</h2>
+                <img src="/Images/icons/plus-circle.svg" class="icono-plus">
+            </div>
+
+            <!-- Grilla de Películas -->
+            <div class="movies-grid">
+                <!-- Película Ejemplo 1 -->
+                <article class="movie-card">
+                    <div class="movie-poster">
+                        <img src="/Images/cartelera/mario_galaxy.jpg" alt="Poster">
+                        <span class="badge premiere">ESTRENO</span>
+                    </div>
+                    <div class="movie-details">
+                        <h3>Super Mario Galaxy</h3>
+                        <p><strong>Duración:</strong> 1h 45min</p>
+                        <p><strong>Idiomas:</strong> ESP / SUB</p>
+                    </div>
+                </article>
+
+                <!-- Película Ejemplo 2 -->
+                <article class="movie-card">
+                    <div class="movie-poster">
+                        <img src="/Images/cartelera/mandalorian_carrusel.jpeg" alt="Poster">
+                    </div>
+                    <div class="movie-details">
+                        <h3>The Mandalorian</h3>
+                        <p><strong>Duración:</strong> 2h 10min</p>
+                        <p><strong>Idiomas:</strong> ESP</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script src="/javascript/script.js"></script>
+</body>
+</html>
