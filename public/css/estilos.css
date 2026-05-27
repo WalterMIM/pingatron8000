@@ -117,13 +117,44 @@ body {
 .movie-info .langs { font-size: 11px; color: var(--rojo); margin-top: 5px; }
 
 @media (max-width: 900px) {
-    .sidebar { left: -100%; transition: 0.4s; }
-    .sidebar.active { left: 0; }
-    .main-content { margin-left: 0; width: 100%; padding: 20px; }
     .menu-toggle {
-        display: flex; flex-direction: column; gap: 5px;
-        position: fixed; top: 20px; right: 20px; z-index: 1000; cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        position: fixed;
+        top: 25px;
+        left: 20px;
+        z-index: 2000;
+        cursor: pointer;
+        background: rgba(229, 9, 20, 0.8);
+        padding: 10px;
+        border-radius: 5px;
     }
-    .menu-toggle span { width: 30px; height: 3px; background: white; }
-    .carousel { aspect-ratio: 16/9; }
+
+    .menu-toggle span {
+        width: 25px;
+        height: 3px;
+        background: white;
+        transition: 0.3s;
+    }
+
+    .sidebar {
+        left: -100%;
+        width: 280px;
+        transition: 0.4s;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 80px 20px 20px 20px;
+    }
+
+    .sidebar-header h1 {
+        margin-top: 40px;
+    }
 }

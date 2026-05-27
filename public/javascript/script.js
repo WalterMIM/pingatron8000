@@ -1,4 +1,4 @@
-// Carrusel
+
 const tira = document.querySelector('.carousel-tira');
 const btnIzq = document.querySelector('.btn-izq');
 const btnDer = document.querySelector('.btn-der');
@@ -18,17 +18,16 @@ btnIzq.addEventListener('click', () => {
     mover();
 });
 
-// Menu Movil
 const menuToggle = document.getElementById('menuToggle');
 const sidebar = document.getElementById('sidebar');
 
 if(menuToggle) {
     menuToggle.addEventListener('click', () => {
         sidebar.classList.toggle('active');
+        menuToggle.classList.toggle('is-active'); 
     });
 }
 
-// Auto-play cada 6 segundos
 setInterval(() => {
     index = (index < 2) ? index + 1 : 0;
     mover();
