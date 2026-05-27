@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 :root {
     --rojo: #e50914;
     --oscuro: #141414;
@@ -104,4 +105,135 @@ nav {
 
 @media (min-width: 769px) {
     .menu-btn { display: none; }
+=======
+:root {
+    --rojo: #e50914;
+    --negro: #141414;
+    --gris-oscuro: #222;
+}
+
+/* ... (Mantener los estilos base del mensaje anterior) ... */
+
+/* MENU HAMBURGUESA */
+.menu-toggle {
+    display: none; /* Oculto en desktop */
+    flex-direction: column;
+    cursor: pointer;
+    position: absolute;
+    left: 20px;
+    top: 35px;
+    z-index: 2000;
+}
+
+.menu-toggle span {
+    width: 25px;
+    height: 3px;
+    background-color: white;
+    margin: 2px 0;
+    transition: 0.4s;
+}
+
+/* DISEÑO DE LAS TARJETAS DE PELÍCULAS */
+.movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.movie-card {
+    background-color: var(--gris-oscuro);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+    border: 1px solid #333;
+}
+
+.movie-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--rojo);
+}
+
+.movie-img {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2/3;
+}
+
+.movie-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--rojo);
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.movie-info {
+    padding: 15px;
+}
+
+.movie-info h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.movie-info p {
+    font-size: 0.85rem;
+    color: #bbb;
+    margin: 2px 0;
+}
+
+/* RESPONSIVO MÓVIL */
+@media (max-width: 768px) {
+    .menu-toggle { display: flex; }
+
+    nav {
+        position: fixed;
+        left: -100%; /* Escondido a la izquierda */
+        top: 0;
+        width: 250px;
+        height: 100vh;
+        background-color: var(--negro);
+        transition: 0.4s;
+        z-index: 1500;
+        box-shadow: 10px 0 20px rgba(0,0,0,0.8);
+    }
+
+    /* Clase que activaremos con JS */
+    nav.active {
+        left: 0;
+    }
+
+    .nav-container {
+        flex-direction: column;
+        padding-top: 80px;
+        justify-content: flex-start;
+        gap: 0;
+    }
+
+    .nav-link {
+        width: 100%;
+        padding: 20px;
+        border-bottom: 1px solid #333;
+        border-radius: 0;
+    }
+
+    .movies-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en móvil */
+        gap: 15px;
+    }
+>>>>>>> e5570584487b126fc7b7f3fc3d421fd6abaf1115
 }

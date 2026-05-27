@@ -20,3 +20,26 @@
 
   "packageManager": "pnpm@11.3.0"
 }
+
+{
+  "name": "p",
+  "version": "1.0.0",
+  "description": "Proyecto 20%",
+  "main": "index.js",
+  "type": "commonjs",
+  "author": "Juan Flores, Adrian Agreda, Daniel Herrera",
+  "license": "ISC",
+
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js",
+    "build": "echo Build listo"
+  },
+
+  "dependencies": {
+    "express": "^5.2.1",
+	"html": "^1.0.0"
+  },
+
+  "packageManager": "pnpm@11.3.0"
+}
