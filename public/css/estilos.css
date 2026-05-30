@@ -84,7 +84,7 @@ body {
 
 .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
 
-.add-icon { width: 30px; filter: invert(1); cursor: pointer; }
+.add-icon { width: 30px; filter: invert(1);}
 
 .movies-grid {
     display: grid;
