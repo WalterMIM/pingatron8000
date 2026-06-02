@@ -8,15 +8,21 @@ function mover() {
     tira.style.transform = `translateX(-${index * 33.333}%)`;
 }
 
-btnDer.addEventListener('click', () => {
-    index = (index < 2) ? index + 1 : 0;
-    mover();
-});
+if (btnDer && btnIzq && tira) {
+    btnDer.addEventListener('click', () => {
+        index = (index < 2) ? index + 1 : 0;
+        mover();
+    });
 
-btnIzq.addEventListener('click', () => {
-    index = (index > 0) ? index - 1 : 2;
-    mover();
-});
+    btnIzq.addEventListener('click', () => {
+        index = (index > 0) ? index - 1 : 2;
+        mover();
+    });
+    setInterval(() => {
+        index = (index < 2) ? index + 1 : 0;
+        mover();
+    }, 6000);
+}
 
 const menuToggle = document.getElementById('menuToggle');
 const sidebar = document.getElementById('sidebar');
