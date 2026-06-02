@@ -173,3 +173,47 @@ body {
         margin-top: 40px;
     }
 }
+
+/* --- SECCIÓN DE CARAMELERÍA --- */
+
+/* Contenedor que organiza los productos en 5 columnas */
+.candy-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); 
+    gap: 15px;
+    padding: 20px;
+}
+
+/* La tarjeta individual de cada dulce o combo */
+.candy-card {
+    background: #1a1a1a;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+/* EFECTO HOVER: Lo que pediste para que se agranden */
+.candy-card:hover {
+    transform: scale(1.08); /* Se agranda un poco */
+    box-shadow: 0 10px 20px rgba(229, 9, 20, 0.4); /* Sombra roja del brillo */
+    z-index: 10;
+}
+
+.candy-poster img {
+    width: 100%;
+    height: 180px; /* Un poco más bajitos que los posters de cine */
+    object-fit: cover;
+}
+
+.candy-info {
+    padding: 12px;
+    text-align: center;
+}
+
+/* Ajuste para que en celulares no se vean 5 amontonados */
+@media (max-width: 900px) {
+    .candy-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
