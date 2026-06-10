@@ -29,7 +29,19 @@
         <span></span><span></span><span></span>
     </div>
 
+
+
     <main class="main-content">
+
+        <div id="user-bar" class="user-bar" style="display: none;">
+    <div class="user-info">
+        <span id="user-greeting"></span>
+    </div>
+    <div class="user-points">
+        <span class="star-icon">⭐</span>
+        <span id="user-score">0 pts</span>
+    </div>
+</div>
         
         <section class="carousel-section">
             <div class="carousel">
@@ -102,5 +114,40 @@
     </main>
 
     <script src="/javascript/script.js"></script>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/api/usuario-actual')
+                .then(res => res.json())
+                .then(data => {
+                    const userBar = document.getElementById('user-bar');
+                    const userGreeting = document.getElementById('user-greeting');
+                    const btnLoginNav = document.getElementById('btn-login-nav'); // <--- Esto busca el id
+
+                    if (data.logueado) {
+                        // Muestra la barra encima del carrusel
+                        if (userBar) userBar.style.display = 'flex';
+                        
+                        // Cambia el texto de bienvenida
+                        if (userGreeting) {
+                            if (data.rol === 'admin') {
+                                userGreeting.innerHTML = '🔑 Modo: <strong>Admin</strong>';
+                            } else {
+                                userGreeting.innerHTML = `¡Hola, <strong>${data.nombre}</strong>!`;
+                            }
+                        }
+
+                        // ¡AQUÍ CAMBIA EL BOTÓN!
+                        if (btnLoginNav) {
+                            btnLoginNav.textContent = 'Cerrar Sesión';
+                            btnLoginNav.href = '/logout'; // Apunta a la ruta de destruir sesión
+                            btnLoginNav.style.color = '#e50914'; // Lo pone rojo
+                        }
+                    }
+                })
+                .catch(err => console.error('Error al verificar la sesión:', err));
+        });
+    </script>
+</body>
+</html>
 </body>
 </html>

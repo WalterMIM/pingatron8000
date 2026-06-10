@@ -398,3 +398,39 @@ body {
     color: #888 !important;
     font-weight: 400 !important;
 }
+
+/* --- BARRA DE USUARIO LOGUEADO --- */
+.user-bar {
+    background-color: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 20px auto;
+    max-width: 90%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.user-greeting {
+    font-weight: 600;
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.user-points {
+    background-color: #2b2b2b;
+    padding: 6px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #e50914; /* El rojo de tu marca */
+}
+
+#user-score {
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
