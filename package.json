@@ -12,10 +12,12 @@
     "build": "echo Build listo"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "html": "^1.0.0",
-    "mysql2": "^3.22.5"
+    "mysql2": "^3.22.5",
+    "nodemailer": "^9.0.0"
   },
   "packageManager": "pnpm@11.3.0"
 }
