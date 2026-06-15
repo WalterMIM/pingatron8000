@@ -3,6 +3,7 @@ const path = require('path');
 const session = require('express-session'); // Para las sesiones
 const conexion = require('./conexion'); // Importa tu archivo de XAMPP
 const app = express();
+const bcrypt = require('bcryptjs');
 
 // 1. CONFIGURACIONES GENERALES
 app.use(express.static(path.join(__dirname, 'public')));
