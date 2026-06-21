@@ -37,10 +37,6 @@ body {
 
 .nav-links { list-style: none; }
 
-.login-menu-item{
-	margin-bottom: auto;
-}
-
 .nav-links li { margin-bottom: 15px; }
 
 .nav-links a {
@@ -51,13 +47,29 @@ body {
     display: block;
     padding: 10px;
     border-radius: 5px;
+	align-content:center;
 }
 
-.nav-links a:hover, .nav-links a.active {
-    color: white;
-    background-color: var(--rojo);
-}
 
+.nav-links div:hover, .nav-links div.active{
+	color:white;
+	background-color:var(--rojo);
+}
+.nav-links div:hover img, .nav-links div.active img{
+	filter:invert(9%) sepia(88%) saturate(3826%) hue-rotate(355deg) brightness(118%) contrast(118%);
+}
+.contenedor{
+display:flex;
+justify-content: space-between;
+border-radius: 8px;
+align-items: center
+}
+.contenedor:hover a{
+color:white;
+}
+.contenedor:hover a img{
+filter:invert(1);
+}
 .main-content {
     margin-left: var(--sidebar-width);
     width: calc(100% - var(--sidebar-width));
@@ -88,7 +100,7 @@ body {
 
 .section-header { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
 
-.add-icon { width: 30px; filter: invert(1);}
+.add-icon { width: 30px; filter: invert(11%) sepia(85%) saturate(6446%) hue-rotate(15deg) brightness(88%) contrast(118%); position: relative; top: 3px; }
 
 .movies-grid {
     display: grid;
@@ -375,6 +387,9 @@ body {
 
 .btn-login:active {
     transform: scale(0.98);
+}
+.add-icon:hover{
+filter: invert(1);
 }
 
 /* Enlaces del pie de la tarjeta */
