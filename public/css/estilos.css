@@ -37,6 +37,10 @@ body {
 
 .nav-links { list-style: none; }
 
+.login-menu-item{
+	margin-bottom: auto;
+}
+
 .nav-links li { margin-bottom: 15px; }
 
 .nav-links a {
@@ -172,7 +176,6 @@ body {
         margin-top: 40px;
     }
 }
-
 /* --- SECCIÓN DE CARAMELERÍA --- */
 .candy-grid {
     display: grid;
