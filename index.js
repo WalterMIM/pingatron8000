@@ -91,19 +91,19 @@ app.post('/register', async (req, res) => {
             const datosUsuario = { nombre, email, password };
             const token = jwt.sign(datosUsuario, JWT_SECRET, { expiresIn: '15m' });
 
-            // 🛠️ CONFIGURACIÓN ROBUSTA DE GMAIL (Cambiamos el método de conexión)
-            const transporter = nodemailer.createTransport({
-                host: 'smtp.gmail.com',
-                port: 465,
-                secure: true, // true para el puerto 465 (SSL)
-                auth: {
-                    user: EMAIL_USER,
-                    pass: EMAIL_PASS
-                },
-                tls: {
-                    rejectUnauthorized: false // Evita que Render bloquee la conexión por certificados
-                }
-            });
+          const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 587,         // <-- Cambiado de 465 a 587
+    secure: false,     // <-- Cambiado a false (587 requiere secure: false al inicio, luego sube a TLS)
+    auth: {
+        user: EMAIL_USER,
+        pass: EMAIL_PASS
+    },
+    tls: {
+        rejectUnauthorized: false,
+        ciphers: 'SSLv3' // Esto ayuda a saltarse bloqueos de red de Render
+    }
+});
 
             const host = req.get('host'); 
             const protocol = req.protocol;
