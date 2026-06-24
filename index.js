@@ -73,18 +73,14 @@ app.post('/login', (req, res) => {
     });
 });
 
-// =========================================================================
-// RUTA POST DE REGISTER: GENERA EL TOKEN Y ENVÍA EL CORREO ELECTRONICO
-// =========================================================================
 app.post('/register', async (req, res) => {
     const { nombre, email, password } = req.body;
 
     try {
-        // Primero verificamos localmente si el correo ya existe
         const queryCheck = 'SELECT id FROM usuarios WHERE email = ?';
         conexion.query(queryCheck, [email], async (err, results) => {
             if (err) {
-                console.error(err);
+                console.error("❌ Error en base de datos:", err);
                 return res.status(500).send('Error al procesar el registro');
             }
 
@@ -92,49 +88,60 @@ app.post('/register', async (req, res) => {
                 return res.send('<h3>El correo electrónico ya está registrado.</h3><a href="/register">Volver a intentar</a>');
             }
 
-            // Guardamos los datos temporalmente dentro de un Token JWT que expira en 15 minutos
             const datosUsuario = { nombre, email, password };
             const token = jwt.sign(datosUsuario, JWT_SECRET, { expiresIn: '15m' });
 
-            // Configuramos el motor de envíos de Gmail
+            // 🛠️ CONFIGURACIÓN ROBUSTA DE GMAIL (Cambiamos el método de conexión)
             const transporter = nodemailer.createTransport({
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true, // true para el puerto 465 (SSL)
                 auth: {
                     user: EMAIL_USER,
                     pass: EMAIL_PASS
+                },
+                tls: {
+                    rejectUnauthorized: false // Evita que Render bloquee la conexión por certificados
                 }
             });
 
-            // Detecta dinámicamente si estás en localhost o en Render para armar la URL
             const host = req.get('host'); 
             const protocol = req.protocol;
             const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
 
             const mailOptions = {
-                from: EMAIL_USER,
-                to: email, // Le llega al correo que se escribe en el formulario
+                from: `"CineCentral 🎬" <${EMAIL_USER}>`,
+                to: email, 
                 subject: '🎬 Confirma tu cuenta en CineCentral',
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
                         <h2 style="color: #e50914;">¡Hola, ${nombre}!</h2>
-                        <p>Gracias por unirte a <strong>CineCentral</strong>. Para activar tu cuenta y poder iniciar sesión, por favor haz clic en el siguiente botón:</p>
+                        <p>Gracias por unirte a <strong>CineCentral</strong>. Para activar tu cuenta, por favor haz clic en el siguiente botón:</p>
                         <div style="text-align: center; margin: 30px 0;">
                             <a href="${urlVerificacion}" style="background-color: #e50914; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Confirmar mi cuenta</a>
                         </div>
-                        <p style="color: #666; font-size: 0.9em;">Este enlace expirará en 15 minutos por motivos de seguridad.</p>
+                        <p style="color: #666; font-size: 0.9em;">Este enlace expirará en 15 minutos.</p>
                     </div>
                 `
             };
 
-            // Enviamos el correo electrónico real
-            await transporter.sendMail(mailOptions);
+            // 🔍 CAZADOR DE ERRORES EN EL ENVÍO
+            console.log("📨 Intentando enviar correo a:", email);
             
-            // Esto es lo que verá el usuario en la web mientras va a revisar su bandeja
-            res.send('<h3>¡Casi listo!</h3><p>Hemos enviado un enlace de confirmación a tu correo electrónico. Por favor, revísalo para activar tu cuenta.</p>');
+            transporter.sendMail(mailOptions, (errorMail, info) => {
+                if (errorMail) {
+                    // ¡SI ESTO FALLA, SALDRÁ AQUÍ EN LOS LOGS EN LUGAR DE QUEDARSE PENSANDO!
+                    console.error("❌ ERROR CRÍTICO DE NODEMAILER:", errorMail);
+                    return res.status(500).send(`<h3>Error al enviar el correo</h3><p>${errorMail.message}</p>`);
+                }
+                
+                console.log("✅ Correo enviado con éxito:", info.response);
+                res.send('<h3>¡Casi listo!</h3><p>Hemos enviado un enlace de confirmación a tu correo electrónico. Por favor, revísalo para activar tu cuenta.</p>');
+            });
         });
 
     } catch (error) {
-        console.error(error);
+        console.error("❌ Error general en la ruta:", error);
         res.status(500).send('Hubo un error al procesar tu registro.');
     }
 });
