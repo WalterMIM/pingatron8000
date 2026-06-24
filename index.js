@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
 
-const EMAIL_USER = 'adrian.agreda15@gmail.com'; 
+const EMAIL_USER = 'akira1berserker@gmail.com'; 
 const EMAIL_PASS = 'xnkb ssyf ravb ylhh'; 
 const JWT_SECRET = 'MiClaveSecretaSuperSeguraParaCineCentral123';
 
