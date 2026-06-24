@@ -7,9 +7,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 
-// ⚠️ REEMPLAZA ESTO CON TUS DATOS REALES DE GMAIL
-const EMAIL_USER = 'tu_correo@gmail.com'; 
-const EMAIL_PASS = 'abcd efgh ijkl mnop'; // Las 16 letras amarillas de Google sin espacios
+
+const EMAIL_USER = 'adrian.agreda15@gmail.com'; 
+const EMAIL_PASS = 'xnkb ssyf ravb ylhh'; 
 const JWT_SECRET = 'MiClaveSecretaSuperSeguraParaCineCentral123';
 
 // 1. CONFIGURACIONES GENERALES
@@ -74,13 +74,13 @@ app.post('/login', (req, res) => {
 });
 
 // =========================================================================
-// CAMBIO AQUÍ 🛠️: SE MODIFICÓ LA RUTA POST DE REGISTER PARA ENVIAR EL CORREO
+// RUTA POST DE REGISTER: GENERA EL TOKEN Y ENVÍA EL CORREO ELECTRONICO
 // =========================================================================
 app.post('/register', async (req, res) => {
     const { nombre, email, password } = req.body;
 
     try {
-        // Primero verificamos localmente si el correo ya existe para no enviar correos en vano
+        // Primero verificamos localmente si el correo ya existe
         const queryCheck = 'SELECT id FROM usuarios WHERE email = ?';
         conexion.query(queryCheck, [email], async (err, results) => {
             if (err) {
@@ -105,13 +105,14 @@ app.post('/register', async (req, res) => {
                 }
             });
 
-const host = req.get('host'); 
-const protocol = req.protocol;
-const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
+            // Detecta dinámicamente si estás en localhost o en Render para armar la URL
+            const host = req.get('host'); 
+            const protocol = req.protocol;
+            const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
 
             const mailOptions = {
                 from: EMAIL_USER,
-                to: email,
+                to: email, // Le llega al correo que se escribe en el formulario
                 subject: '🎬 Confirma tu cuenta en CineCentral',
                 html: `
                     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
@@ -128,6 +129,7 @@ const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
             // Enviamos el correo electrónico real
             await transporter.sendMail(mailOptions);
             
+            // Esto es lo que verá el usuario en la web mientras va a revisar su bandeja
             res.send('<h3>¡Casi listo!</h3><p>Hemos enviado un enlace de confirmación a tu correo electrónico. Por favor, revísalo para activar tu cuenta.</p>');
         });
 
@@ -138,7 +140,7 @@ const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
 });
 
 // =========================================================================
-// NUEVA RUTA AGREGADA 🛠️: AQUÍ CAE EL USUARIO CUANDO DA CLIC EN SU CORREO
+// RUTA DE VERIFICACIÓN: RECIBE EL CLICK DEL CORREO Y CREA EL USUARIO REAL
 // =========================================================================
 app.get('/verificar', (req, res) => {
     const token = req.query.token;
@@ -166,12 +168,12 @@ app.get('/verificar', (req, res) => {
                 return res.status(500).send('Error al guardar el usuario en la base de datos.');
             }
             
-            // Iniciamos la sesión en el servidor automáticamente como hacías antes
+            // Iniciamos la sesión en el servidor automáticamente
             req.session.usuarioId = result.insertId;
             req.session.nombre = nombre;
             req.session.rol = 'cliente';
 
-            // Lo mandamos directo al inicio tal cual estaba en tu código anterior
+            // Al abrirse la pestaña desde el correo, muestra esto y lo deja listo para hacer clic e ir a la cartelera con sesión iniciada
             res.send(`
                 <div style="text-align: center; font-family: sans-serif; margin-top: 50px;">
                     <h1 style="color: #4CAF50;">¡Cuenta verificada con éxito! 🎉</h1>
@@ -191,7 +193,6 @@ app.get('/verificar', (req, res) => {
         `);
     }
 });
-
 
 // Ruta para que el Frontend sepa si hay un usuario activo
 app.get('/api/usuario-actual', (req, res) => {
