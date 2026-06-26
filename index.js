@@ -1,22 +1,43 @@
 const express = require('express');
 const path = require('path');
 const session = require('express-session'); // Para las sesiones
-const conexion = require('./conexion'); // Importa tu archivo de XAMPP
+const conexion = require('./conexion'); // Importa tu archivo de conexión
 const app = express();
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer');
+const multer = require('multer'); // Gestor de subida de archivos
 
+// ⚙️ CONSTANTE OPERACIONAL DEL MOTOR DE HORARIOS
+const MINUTOS_LIMPIEZA = 20; 
 
-const EMAIL_USER = 'akira1berserker@gmail.com'; 
-const EMAIL_PASS = 'xnkb ssyf ravb ylhh'; 
-const JWT_SECRET = 'MiClaveSecretaSuperSeguraParaCineCentral123';
+// 🔒 MIDDLEWARE DE SEGURIDAD CORREGIDO
+function verificarAdmin(req, res, next) {
+    if (req.session && req.session.rol === 'admin') {
+        return next(); // ¡Autorizado! Continúa
+    } else {
+        return res.status(403).send(`
+            <div style="text-align:center; font-family:sans-serif; margin-top:50px; background:#141414; color:white; padding:30px;">
+                <h1 style="color:#e50914;">🚫 Acceso Denegado</h1>
+                <p>No tienes permisos de administrador para ver o modificar este panel.</p>
+                <a href="/login" style="color:#4CAF50; font-weight:bold; text-decoration:none;">Iniciar Sesión como Admin</a>
+            </div>
+        `);
+    }
+}
 
-// 1. CONFIGURACIONES GENERALES
+// ⚙️ CONFIGURACIÓN DE ALMACENAMIENTO DE PORTADAS (MULTER)
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, path.join(__dirname, 'public')); 
+    },
+    filename: (req, file, cb) => {
+        const extension = path.extname(file.originalname);
+        cb(null, 'portada-' + Date.now() + extension); 
+    }
+});
+const upload = multer({ storage: storage });
+
+// 1. CONFIGURACIONES GENERALES DE EXPRESS
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'views')));
-
-// Permite que Express lea los datos que envías desde el formulario HTML
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -25,10 +46,10 @@ app.use(session({
     secret: 'ClaveSecretaDelCineCentral',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // false porque estamos trabajando en localhost
+    cookie: { secure: false } 
 }));
 
-// 2. RUTAS DE NAVEGACIÓN (GET)
+// 2. RUTAS DE NAVEGACIÓN VISUAL (GET CLEAN URLS)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
@@ -41,38 +62,54 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'Register.html'));
 });
 
-// 3. RUTA DEL LOGIN PARA PROCESAR EL FORMULARIO (POST)
+app.get('/admin', verificarAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'admin.html'));
+});
+
+app.get('/cartelera', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'Cartelera.html'));
+});
+
+app.get('/proximos-estrenos', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'ProximosEstrenos.html'));
+});
+
+app.get('/carameleria', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'carameleria.html'));
+});
+
+app.get('/contacto', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'Contacto.html'));
+});
+
+
+// 3. RUTAS DE AUTENTICACIÓN (POST)
+
+// LOGUEAR USUARIO
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    // Buscamos al usuario en la tabla de XAMPP
     const query = 'SELECT id, nombre, email, rol FROM usuarios WHERE email = ? AND password = ?';
-    
     conexion.query(query, [email, password], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Error interno en el servidor');
         }
 
-        // Si encontramos una coincidencia
         if (results.length > 0) {
             const usuario = results[0];
-            
-            // Guardamos los datos en la sesión para que el servidor lo recuerde
             req.session.usuarioId = usuario.id;
             req.session.nombre = usuario.nombre;
             req.session.rol = usuario.rol;
 
-            // Redirige al inicio tal cual está la página actualmente
             res.redirect('/'); 
-            
         } else {
-            // Si los datos no coinciden en phpMyAdmin
             res.send('<h3>Correo o contraseña incorrectos.</h3><a href="/login">Volver a intentar</a>');
         }
     });
 });
 
+// REGISTRAR USUARIO (MÉTODO DIRECTO REVERTIDO)
 app.post('/register', async (req, res) => {
     const { nombre, email, password } = req.body;
 
@@ -88,120 +125,166 @@ app.post('/register', async (req, res) => {
                 return res.send('<h3>El correo electrónico ya está registrado.</h3><a href="/register">Volver a intentar</a>');
             }
 
-            const datosUsuario = { nombre, email, password };
-            const token = jwt.sign(datosUsuario, JWT_SECRET, { expiresIn: '15m' });
-
-          const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,         // <-- Cambiado de 465 a 587
-    secure: false,     // <-- Cambiado a false (587 requiere secure: false al inicio, luego sube a TLS)
-    auth: {
-        user: EMAIL_USER,
-        pass: EMAIL_PASS
-    },
-    tls: {
-        rejectUnauthorized: false,
-        ciphers: 'SSLv3' // Esto ayuda a saltarse bloqueos de red de Render
-    }
-});
-
-            const host = req.get('host'); 
-            const protocol = req.protocol;
-            const urlVerificacion = `${protocol}://${host}/verificar?token=${token}`;
-
-            const mailOptions = {
-                from: `"CineCentral 🎬" <${EMAIL_USER}>`,
-                to: email, 
-                subject: '🎬 Confirma tu cuenta en CineCentral',
-                html: `
-                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-                        <h2 style="color: #e50914;">¡Hola, ${nombre}!</h2>
-                        <p>Gracias por unirte a <strong>CineCentral</strong>. Para activar tu cuenta, por favor haz clic en el siguiente botón:</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="${urlVerificacion}" style="background-color: #e50914; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">Confirmar mi cuenta</a>
-                        </div>
-                        <p style="color: #666; font-size: 0.9em;">Este enlace expirará en 15 minutos.</p>
-                    </div>
-                `
-            };
-
-            // 🔍 CAZADOR DE ERRORES EN EL ENVÍO
-            console.log("📨 Intentando enviar correo a:", email);
-            
-            transporter.sendMail(mailOptions, (errorMail, info) => {
-                if (errorMail) {
-                    // ¡SI ESTO FALLA, SALDRÁ AQUÍ EN LOS LOGS EN LUGAR DE QUEDARSE PENSANDO!
-                    console.error("❌ ERROR CRÍTICO DE NODEMAILER:", errorMail);
-                    return res.status(500).send(`<h3>Error al enviar el correo</h3><p>${errorMail.message}</p>`);
+            // Guardar directamente al usuario en la BD con rol por defecto 'cliente'
+            const queryInsert = 'INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)';
+            conexion.query(queryInsert, [nombre, email, password, 'cliente'], (errInsert, result) => {
+                if (errInsert) {
+                    console.error("❌ Error al guardar usuario:", errInsert);
+                    return res.status(500).send('Error al guardar el usuario.');
                 }
                 
-                console.log("✅ Correo enviado con éxito:", info.response);
-                res.send('<h3>¡Casi listo!</h3><p>Hemos enviado un enlace de confirmación a tu correo electrónico. Por favor, revísalo para activar tu cuenta.</p>');
+                // Iniciar sesión de inmediato de forma automática
+                req.session.usuarioId = result.insertId;
+                req.session.nombre = nombre;
+                req.session.rol = 'cliente';
+
+                // Redireccionar directamente al Home
+                res.redirect('/'); 
             });
         });
-
     } catch (error) {
-        console.error("❌ Error general en la ruta:", error);
         res.status(500).send('Hubo un error al procesar tu registro.');
     }
 });
 
-// =========================================================================
-// RUTA DE VERIFICACIÓN: RECIBE EL CLICK DEL CORREO Y CREA EL USUARIO REAL
-// =========================================================================
-app.get('/verificar', (req, res) => {
-    const token = req.query.token;
 
-    if (!token) {
-        return res.status(400).send('Falta el token de verificación.');
-    }
+// 4. MÓDULO DE ADMINISTRACIÓN
+app.post('/api/admin/agregar-pelicula', verificarAdmin, upload.single('portada'), (req, res) => {
+    if (!req.file) return res.status(400).send('Debes seleccionar una imagen.');
 
-    try {
-        // Desencriptamos y validamos el token.
-        const usuarioValido = jwt.verify(token, JWT_SECRET);
+    const { titulo, duracion, genero, sala_id, sinopsis, estado } = req.body;
+    const portadaURL = '/' + req.file.filename; 
+    const minutosDuracion = parseInt(duracion);
 
-        // Sacamos los datos que estaban en el limbo de los 15 minutos
-        const { nombre, email, password } = usuarioValido;
+    const queryPelicula = 'INSERT INTO peliculas (titulo, duracion, genero, portada, sinopsis, estado) VALUES (?, ?, ?, ?, ?, ?)';
+    conexion.query(queryPelicula, [titulo, minutosDuracion, genero, portadaURL, sinopsis, estado || 'cartelera'], (err, resultPelicula) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error al guardar la película');
+        }
 
-        // ¡AQUÍ ES DONDE RECIÉN ENTRA A LA BASE DE DATOS!
-        const query = 'INSERT INTO usuarios (nombre, email, password) VALUES (?, ?, ?)';
-        
-        conexion.query(query, [nombre, email, password], (err, result) => {
-            if (err) {
-                if (err.code === 'ER_DUP_ENTRY') {
-                    return res.send('<h3>Esta cuenta ya fue verificada o el correo ya existe.</h3>');
-                }
-                console.error(err);
-                return res.status(500).send('Error al guardar el usuario en la base de datos.');
-            }
-            
-            // Iniciamos la sesión en el servidor automáticamente
-            req.session.usuarioId = result.insertId;
-            req.session.nombre = nombre;
-            req.session.rol = 'cliente';
-
-            // Al abrirse la pestaña desde el correo, muestra esto y lo deja listo para hacer clic e ir a la cartelera con sesión iniciada
-            res.send(`
-                <div style="text-align: center; font-family: sans-serif; margin-top: 50px;">
-                    <h1 style="color: #4CAF50;">¡Cuenta verificada con éxito! 🎉</h1>
-                    <p>Tu usuario ha sido creado correctamente. ¡Bienvenido a CineCentral!</p>
-                    <p><a href="/" style="color: #e50914; font-weight: bold; text-decoration: none;">Ir a la Cartelera</a></p>
+        if (estado === 'estreno') {
+            return res.send(`
+                <div style="text-align: center; font-family: sans-serif; margin-top: 50px; color: white; background: #141414; padding: 20px;">
+                    <h1 style="color: #4CAF50;">¡Próximo Estreno Guardado! 🚀</h1>
+                    <p>La película <strong>${titulo}</strong> se guardó exitosamente.</p>
+                    <a href="/admin" style="color: #e50914; font-weight: bold; text-decoration: none;">Volver al Panel</a>
                 </div>
             `);
-        });
+        }
 
-    } catch (error) {
-        res.send(`
-            <div style="text-align: center; font-family: sans-serif; margin-top: 50px;">
-                <h1 style="color: #f44336;">El enlace ha expirado o es inválido ❌</h1>
-                <p>Recuerda que por seguridad el enlace solo dura 15 minutos.</p>
-                <p>Por favor, vuelve a la página de registro e inténtalo nuevamente.</p>
-            </div>
-        `);
-    }
+        const peliculaId = resultPelicula.insertId;
+
+        const querySala = 'SELECT hora_apertura, hora_cierre FROM salas WHERE id = ?';
+        conexion.query(querySala, [sala_id], (err, salas) => {
+            if (err || salas.length === 0) {
+                return res.status(500).send('Error al obtener los datos de la sala.');
+            }
+
+            const { hora_apertura, hora_cierre } = salas[0];
+            const [aprH, aprM] = hora_apertura.split(':').map(Number);
+            const [cieH, cieM] = hora_cierre.split(':').map(Number);
+            
+            let minutosActuales = aprH * 60 + aprM;
+            const minutesCierre = cieH * 60 + cieM;
+            const funcionesACrear = [];
+
+            while (minutosActuales + minutosDuracion <= minutesCierre) {
+                const minutosFinPelicula = minutosActuales + minutosDuracion;
+                const hInicio = String(Math.floor(minutosActuales / 60)).padStart(2, '0') + ':' + String(minutosActuales % 60).padStart(2, '0') + ':00';
+                const hFin = String(Math.floor(minutosFinPelicula / 60)).padStart(2, '0') + ':' + String(minutosFinPelicula % 60).padStart(2, '0') + ':00';
+
+                funcionesACrear.push([peliculaId, parseInt(sala_id), hInicio, hFin]);
+                minutosActuales = minutosFinPelicula + MINUTOS_LIMPIEZA;
+            }
+
+            if (funcionesACrear.length === 0) {
+                return res.send('<h3>La película no cabe en el horario de la sala.</h3>');
+            }
+
+            const queryFunciones = 'INSERT INTO funciones (pelicula_id, sala_id, hora_inicio, hora_fin) VALUES ?';
+            conexion.query(queryFunciones, [funcionesACrear], (errFunciones) => {
+                if (errFunciones) return res.status(500).send('Error al generar las funciones automáticas');
+                
+                res.send(`
+                    <div style="text-align: center; font-family: sans-serif; margin-top: 50px; color: white; background: #141414; padding:20px;">
+                        <h1 style="color: #4CAF50;">¡Película y Funciones creadas! 🎬</h1>
+                        <p>Se calcularon automáticamente ${funcionesACrear.length} funciones.</p>
+                        <a href="/admin" style="color: #e50914; font-weight: bold; text-decoration: none;">Volver al panel</a>
+                    </div>
+                `);
+            });
+        });
+    });
 });
 
-// Ruta para que el Frontend sepa si hay un usuario activo
+// API POST CAMBIAR ESTADO
+app.post('/api/admin/cambiar-estado', verificarAdmin, (req, res) => {
+    const { pelicula_id, nuevo_estado, sala_id } = req.body;
+
+    conexion.query('UPDATE peliculas SET estado = ? WHERE id = ?', [nuevo_estado, pelicula_id], (err) => {
+        if (err) return res.status(500).send('Error al actualizar estado.');
+
+        if (nuevo_estado === 'almacen' || nuevo_estado === 'estreno') {
+            conexion.query('DELETE FROM funciones WHERE pelicula_id = ?', [pelicula_id], () => {
+                return res.redirect('/admin');
+            });
+        } 
+        else if (nuevo_estado === 'cartelera' && sala_id) {
+            conexion.query('DELETE FROM funciones WHERE pelicula_id = ?', [pelicula_id], () => {
+                conexion.query('SELECT duracion FROM peliculas WHERE id = ?', [pelicula_id], (err, pRes) => {
+                    const minutosDuracion = pRes[0].duracion;
+
+                    conexion.query('SELECT hora_apertura, hora_cierre FROM salas WHERE id = ?', [sala_id], (err, sRes) => {
+                        const { hora_apertura, hora_cierre } = sRes[0];
+                        const [aprH, aprM] = hora_apertura.split(':').map(Number);
+                        const [cieH, cieM] = hora_cierre.split(':').map(Number);
+                        
+                        let minutosActuales = aprH * 60 + aprM;
+                        const minutosCierre = cieH * 60 + cieM;
+                        const funcionesACrear = [];
+
+                        while (minutosActuales + minutosDuracion <= minutosCierre) {
+                            const minutosFinPelicula = minutosActuales + minutosDuracion;
+                            const hInicio = String(Math.floor(minutosActuales / 60)).padStart(2, '0') + ':' + String(minutosActuales % 60).padStart(2, '0') + ':00';
+                            const hFin = String(Math.floor(minutosFinPelicula / 60)).padStart(2, '0') + ':' + String(minutosFinPelicula % 60).padStart(2, '0') + ':00';
+
+                            funcionesACrear.push([pelicula_id, parseInt(sala_id), hInicio, hFin]);
+                            minutosActuales = minutosFinPelicula + MINUTOS_LIMPIEZA;
+                        }
+
+                        if (funcionesACrear.length > 0) {
+                            conexion.query('INSERT INTO funciones (pelicula_id, sala_id, hora_inicio, hora_fin) VALUES ?', [funcionesACrear], () => {
+                                res.redirect('/admin');
+                            });
+                        } else {
+                            res.send('No cupo en los horarios de la sala.');
+                        }
+                    });
+                });
+            });
+        } else {
+            res.redirect('/admin');
+        }
+    });
+});
+
+// API para listar las películas en el panel inferior
+app.get('/api/admin/todas-las-peliculas', verificarAdmin, (req, res) => {
+    conexion.query('SELECT id, titulo, estado FROM peliculas ORDER BY id DESC', (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+// 5. APIS PÚBLICAS Y AUXILIARES
+app.get('/api/salas', (req, res) => {
+    conexion.query('SELECT id, nombre FROM salas', (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error al traer salas' });
+        res.json(results);
+    });
+});
+
 app.get('/api/usuario-actual', (req, res) => {
     if (req.session && req.session.nombre) {
         res.json({
@@ -214,16 +297,50 @@ app.get('/api/usuario-actual', (req, res) => {
     }
 });
 
-// Ruta para Cerrar Sesión
 app.get('/logout', (req, res) => {
-    req.session.destroy(() => {
-        res.redirect('/'); // Al cerrar sesión, regresa al inicio
+    req.session.destroy(() => { res.redirect('/'); });
+});
+
+app.get('/api/cartelera', (req, res) => {
+    const query = `
+        SELECT p.id AS pelicula_id, p.titulo, p.duracion, p.genero, p.portada, p.sinopsis,
+               f.id AS funcion_id, f.hora_inicio, f.hora_fin, f.sala_id
+        FROM peliculas p
+        LEFT JOIN funciones f ON p.id = f.pelicula_id
+        WHERE p.estado = 'cartelera'
+        ORDER BY p.id ASC, f.hora_inicio ASC
+    `;
+    conexion.query(query, (err, rows) => {
+        if (err) return res.status(500).json({ error: 'Error en base de datos' });
+
+        const peliculasMap = {};
+        rows.forEach(row => {
+            if (!peliculasMap[row.pelicula_id]) {
+                peliculasMap[row.pelicula_id] = {
+                    id: row.pelicula_id, titulo: row.titulo, duracion: row.duracion,
+                    genero: row.genero, portada: row.portada, sinopsis: row.sinopsis, funciones: []
+                };
+            }
+            if (row.funcion_id) {
+                peliculasMap[row.pelicula_id].funciones.push({
+                    id: row.funcion_id, hora_inicio: row.hora_inicio, hora_fin: row.hora_fin, sala_id: row.sala_id
+                });
+            }
+        });
+        res.json(Object.values(peliculasMap));
     });
 });
 
-// 4. ENCENDIDO DEL SERVIDOR
-const PORT = process.env.PORT || 4000;
+app.get('/api/estrenos', (req, res) => {
+    const query = "SELECT id, titulo, duracion, genero, portada, sinopsis FROM peliculas WHERE estado = 'estreno' ORDER BY id DESC";
+    conexion.query(query, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
 
+// 6. CONTROL DE ARRANQUE DEL SERVIDOR
+const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto: ${PORT}`);
 });

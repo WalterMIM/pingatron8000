@@ -16,143 +16,154 @@
             <span></span>
         </div>
 		<nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h1>Cine<span>Central</span></h1>
-        </div>
-        <ul class="nav-links">
-            <li><div  class="contenedor">
-			<a href="index.html" class="active">Inicio</a>
-			<a href="index.html"><img src="/Images/icons/home.svg" class="add-icon" href="index.html"></a>
-			</div>
-			
-			<li><div class="contenedor">
-            <a href="carameleria.html">Caramelería</a>
-			<a href="carameleria.html"><img src="/Images/icons/popcorn-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor active">
-            <a href="Cartelera.html">Carteleras</a>
-			<a href="Cartelera.html"><img src="/Images/icons/movie-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="ProximosEstrenos.html">Próximos estrenos</a>
-			<a href="ProximosEstrenos.html"><img src="/Images/icons/next-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="Contacto.html">Contacto</a>
-			<a href="Contacto.html"><img src="/Images/icons/mail.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="login.html"  class="login-menu-item">Iniciar Sesión</a>
-			<a href="login.html"  class="login-menu-item"><img src="/Images/icons/log-in.svg" class="add-icon"></a>
-			</div></li>
-        </ul>
-    </nav>
+    <div class="sidebar-header">
+        <h1>Cine<span>Central</span></h1>
+    </div>
+    <ul class="nav-links">
+        <li><div class="contenedor">
+        <a href="/" class="">Inicio</a>
+        <a href="/"><img src="/Images/icons/home.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/carameleria">Caramelería</a>
+        <a href="/carameleria"><img src="/Images/icons/popcorn-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/cartelera">Carteleras</a>
+        <a href="/cartelera"><img src="/Images/icons/movie-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/proximos-estrenos">Próximos estrenos</a>
+        <a href="/proximos-estrenos"><img src="/Images/icons/next-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/contacto">Contacto</a>
+        <a href="/contacto"><img src="/Images/icons/mail.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/login" class="login-menu-item" id="btn-login-nav">Iniciar Sesión</a>
+        <a href="/login" class="login-menu-item"><img src="/Images/icons/log-in.svg" class="add-icon"></a>
+        </div></li>
+    </ul>
+</nav>
 		
 		<main class="main-content">
-			<section class="movies-section">
-            <div class="section-header">
-                <h2>Cartelera</h2>
-            </div>
-            <div class="movies-grid-2">
-                
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/mario.jpg" alt="Mario">
-                        <span class="tag-estreno">ESTRENO</span>
-                    </div>
-                    <div class="movie-info">
-                        <h3>Super Mario Galaxy: La película</h3>
-                        <p class="meta">92 min | Animación</p>
-                        <p class="langs">Español, Inglés Sub</p>
-                    </div>
-                </article>
+    <section class="movies-section">
+       <div class="section-header">
+    <h2>Cartelera</h2>
+</div>
 
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/mandalorian.jpg" alt="Mandalorian">
-                    </div>
-                    <div class="movie-info">
-                        <h3>The Mandalorian</h3>
-                        <p class="meta">120 min | Acción</p>
-                        <p class="langs">Español Latino</p>
-                    </div>
-                </article>
+<div id="contenedor-admin-ops" style="margin-bottom: 20px; display: none;">
+    <a href="/admin" class="btn-admin-add">+ Agregar Nueva Película</a>
+</div>
+        <div class="movies-grid-2" id="contenedor-cartelera">
+            <p style="color: #aaa;">Cargando películas en cartelera...</p>
+        </div>
+    </section>
+</main>
 
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/backrooms.jpg" alt="Backrooms">
-                        <span class="tag-estreno">ESTRENO</span>
-                    </div>
-                    <div class="movie-info">
-                        <h3>The Backrooms</h3>
-                        <p class="meta">95 min | Terror</p>
-                        <p class="langs">Inglés Subtitulado</p>
-                    </div>
-                </article>
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const contenedor = document.getElementById("contenedor-cartelera");
+        const contenedorAdmin = document.getElementById("contenedor-admin-ops");
 
-                <article class="movie-card">
+        // 🔍 VERIFICACIÓN DE ROL: Consultamos si el usuario es administrador
+        try {
+            const resUsuario = await fetch('/api/usuario-actual');
+            const usuario = await resUsuario.json();
+
+            if (usuario.logueado && usuario.rol === 'admin') {
+                contenedorAdmin.style.display = "block"; // Hacemos visible el botón si es admin
+            }
+        } catch (error) {
+            console.error("Error verificando el rol del usuario:", error);
+        }
+
+        // 🎬 CARGA DE PELÍCULAS (Tu lógica anterior que funciona perfecto)
+        try {
+            const respuesta = await fetch('/api/cartelera');
+            const peliculas = await respuesta.json();
+
+            if (peliculas.length === 0) {
+                contenedor.innerHTML = '<p style="color: #aaa; grid-column: 1/-1; text-align: center;">No hay películas programadas en la cartelera por el momento.</p>';
+                return;
+            }
+
+            contenedor.innerHTML = ""; 
+
+            peliculas.forEach(peli => {
+                let botonesHorarios = "";
+                if (peli.funciones && peli.funciones.length > 0) {
+                    peli.funciones.forEach(func => {
+                        const horaCorta = func.hora_inicio.substring(0, 5);
+                        botonesHorarios += `<button class="btn-hora" onclick="alert('Seleccionaste la función de las ${horaCorta} para ${peli.titulo}')">${horaCorta}</button>`;
+                    });
+                } else {
+                    botonesHorarios = "<span style='color: #888; font-size: 0.85em;'>Sin funciones hoy</span>";
+                }
+
+                const article = document.createElement("article");
+                article.className = "movie-card";
+                article.innerHTML = `
                     <div class="poster-container">
-                        <img src="/Images/posters/avatar.jpg" alt="Avatar">
+                        <img src="${peli.portada}" alt="${peli.titulo}">
                     </div>
                     <div class="movie-info">
-                        <h3>Avatar: El Camino del Agua</h3>
-                        <p class="meta">192 min | Sci-Fi</p>
-                        <p class="langs">Español | Inglés</p>
+                        <h3>${peli.titulo}</h3>
+                        <p class="meta">${peli.duracion} min | ${peli.genero || 'General'}</p>
+                        <p style="font-size: 0.85em; color: #aaa; margin: 5px 0;">${peli.sinopsis || ''}</p>
+                        <div class="contenedor-horarios" style="margin-top: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
+                            ${botonesHorarios}
+                        </div>
                     </div>
-                </article>
-				
-				<article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/obsesion.jpg" alt="Obsesion">
-                    </div>
-                    <div class="movie-info">
-                        <h3>Obsesión</h3>
-                        <p class="meta">110 min | Terror</p>
-                        <p class="langs">Español, Inglés Sub</p>
-                    </div>
-                </article>
-				
-				<article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/adrian.jpg" alt="Bufon2">
-                    </div>
-                    <div class="movie-info">
-                        <h3>El Bufón 2</h3>
-                        <p class="meta">87 min | Terror</p>
-                        <p class="langs">Inglés Sub</p>
-                    </div>
-                </article>
-				
-				<article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/jackson.jpg" alt="Michael">
-                        <span class="tag-estreno">ESTRENO</span>
-                    </div>
-                    <div class="movie-info">
-                        <h3>Michael</h3>
-                        <p class="meta">127 min | biografía</p>
-                        <p class="langs">Español, Inglés Sub</p>
-                    </div>
-                </article>
-				
-				<article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/zonaderiesgo.jpg" alt="ZonaDeRiesgo">
-                    </div>
-                    <div class="movie-info">
-                        <h3>Zona De Riesgo</h3>
-                        <p class="meta">97 min | Acción</p>
-                        <p class="langs">Español, Inglés Sub</p>
-                    </div>
-                </article>
-			
-            </div>
-        </section>
-		</main>
+                `;
+                contenedor.appendChild(article);
+            });
+
+        } catch (error) {
+            console.error("❌ Error cargando cartelera:", error);
+            contenedor.innerHTML = '<p style="color: #e50914; grid-column: 1/-1; text-align: center;">Error al conectar con la base de datos.</p>';
+        }
+    });
+</script>
+
+<style>
+    .btn-admin-add {
+        display: inline-block;
+        background-color: #e50914;
+        color: white;
+        padding: 12px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: bold;
+        transition: background 0.2s;
+    }
+    .btn-admin-add:hover {
+        background-color: #b81d24;
+    }
+</style>
+
+<style>
+    .btn-hora {
+        background-color: #e50914;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-weight: 500;
+        font-size: 0.85em;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn-hora:hover {
+        background-color: #b81d24;
+    }
+</style>
 	<script src="/javascript/script.js"></script>
 </body>
 </html>

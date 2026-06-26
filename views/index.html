@@ -5,71 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CineCentral - Dashboard</title>
     <link rel="stylesheet" href="/css/estilos.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-	<link rel="shortcut icon" href="Images/shortico.png" type="image/x-icon">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2=family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="Images/shortico.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h1>Cine<span>Central</span></h1>
-        </div>
-        <ul class="nav-links">
-            <li><div  class="contenedor active">
-			<a href="index.html" class="active">Inicio</a>
-			<a href="index.html"><img src="/Images/icons/home.svg" class="add-icon" href="index.html"></a>
-			</div>
-			
-			<li><div class="contenedor">
-            <a href="carameleria.html">Caramelería</a>
-			<a href="carameleria.html"><img src="/Images/icons/popcorn-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="Cartelera.html">Carteleras</a>
-			<a href="Cartelera.html"><img src="/Images/icons/movie-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="ProximosEstrenos.html">Próximos estrenos</a>
-			<a href="ProximosEstrenos.html"><img src="/Images/icons/next-svgrepo-com.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="Contacto.html">Contacto</a>
-			<a href="Contacto.html"><img src="/Images/icons/mail.svg" class="add-icon"></a>
-			</div></li>
-			
-			<li><div class="contenedor">
-            <a href="login.html"  class="login-menu-item">Iniciar Sesión</a>
-			<a href="login.html"  class="login-menu-item"><img src="/Images/icons/log-in.svg" class="add-icon"></a>
-			</div></li>
-        </ul>
-    </nav>
+   <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h1>Cine<span>Central</span></h1>
+    </div>
+    <ul class="nav-links">
+        <li><div class="contenedor">
+        <a href="/" class="contenedor">Inicio</a>
+        <a href="/"><img src="/Images/icons/home.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/carameleria">Caramelería</a>
+        <a href="/carameleria"><img src="/Images/icons/popcorn-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/cartelera">Carteleras</a>
+        <a href="/cartelera"><img src="/Images/icons/movie-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/proximos-estrenos">Próximos estrenos</a>
+        <a href="/proximos-estrenos"><img src="/Images/icons/next-svgrepo-com.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/contacto">Contacto</a>
+        <a href="/contacto"><img src="/Images/icons/mail.svg" class="add-icon"></a>
+        </div></li>
+        
+        <li><div class="contenedor">
+        <a href="/login" class="login-menu-item" id="btn-login-nav">Iniciar Sesión</a>
+        <a href="/login" class="login-menu-item"><img src="/Images/icons/log-in.svg" class="add-icon"></a>
+        </div></li>
+    </ul>
+</nav>
     <div class="menu-toggle" id="menuToggle">
         <span></span><span></span><span></span>
     </div>
 
-
-
     <main class="main-content">
         <div id="user-bar" class="user-bar" style="display: none;">
-    <div class="user-info">
-        <span id="user-greeting"></span>
-    </div>
-    <div class="user-points">
-        <span class="star-icon">⭐</span>
-        <span id="user-score">0 pts</span>
-    </div>
-</div>
+            <div class="user-info">
+                <span id="user-greeting"></span>
+            </div>
+            <div class="user-points">
+                <span class="star-icon">⭐</span>
+                <span id="user-score">0 pts</span>
+            </div>
+        </div>
         
         <section class="carousel-section">
             <div class="carousel">
-                <div class="carousel-tira">
-                    <img src="/Images/banners/banner1.jpg" alt="Estreno 1">
-                    <img src="/Images/banners/banner2.jpg" alt="Estreno 2">
-                    <img src="/Images/banners/banner3.jpg" alt="Estreno 3">
+                <div class="carousel-tira" id="carrusel-tira-dinamica">
+                    <p style="color: white; padding: 20px;">Cargando carrusel...</p>
                 </div>
                 <button class="btn-c btn-izq">&#10094;</button>
                 <button class="btn-c btn-der">&#10095;</button>
@@ -79,96 +75,102 @@
         <section class="movies-section">
             <div class="section-header">
                 <h2>Cartelera</h2>
-                <a href="Cartelera.html"><img src="/Images/icons/plus-circle.svg" class="add-icon"></a>
+                <a href="/cartelera"><img src="/Images/icons/plus-circle.svg" class="add-icon"></a>
             </div>
 
-            <div class="movies-grid">
-                
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/mario.jpg" alt="Mario">
-                        <span class="tag-estreno">ESTRENO</span>
-                    </div>
-                    <div class="movie-info">
-                        <h3>Super Mario Galaxy: La película</h3>
-                        <p class="meta">92 min | Animación</p>
-                        <p class="langs">Español, Inglés Sub</p>
-                    </div>
-                </article>
-
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/mandalorian.jpg" alt="Mandalorian">
-                    </div>
-                    <div class="movie-info">
-                        <h3>The Mandalorian</h3>
-                        <p class="meta">120 min | Acción</p>
-                        <p class="langs">Español Latino</p>
-                    </div>
-                </article>
-
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/backrooms.jpg" alt="Backrooms">
-                        <span class="tag-estreno">ESTRENO</span>
-                    </div>
-                    <div class="movie-info">
-                        <h3>The Backrooms</h3>
-                        <p class="meta">95 min | Terror</p>
-                        <p class="langs">Inglés Subtitulado</p>
-                    </div>
-                </article>
-
-                <article class="movie-card">
-                    <div class="poster-container">
-                        <img src="/Images/posters/avatar.jpg" alt="Avatar">
-                    </div>
-                    <div class="movie-info">
-                        <h3>Avatar: El Camino del Agua</h3>
-                        <p class="meta">192 min | Sci-Fi</p>
-                        <p class="langs">Español / Inglés</p>
-                    </div>
-                </article>
-			
+            <div class="movies-grid" id="contenedor-ultimos-estrenos">
+                <p style="color: #aaa;">Cargando últimos estrenos...</p>
             </div>
         </section>
     </main>
 
     <script src="/javascript/script.js"></script>
-<script>
-        document.addEventListener('DOMContentLoaded', () => {
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const carruselTira = document.getElementById('carrusel-tira-dinamica');
+            const gridEstrenos = document.getElementById('contenedor-ultimos-estrenos');
+
+            // 1. Control de Estado de Sesión existente
             fetch('/api/usuario-actual')
                 .then(res => res.json())
                 .then(data => {
                     const userBar = document.getElementById('user-bar');
                     const userGreeting = document.getElementById('user-greeting');
-                    const btnLoginNav = document.getElementById('btn-login-nav'); // <--- Esto busca el id
+                    const btnLoginNav = document.getElementById('btn-login-nav');
 
                     if (data.logueado) {
-                        // Muestra la barra encima del carrusel
                         if (userBar) userBar.style.display = 'flex';
-                        
-                        // Cambia el texto de bienvenida
                         if (userGreeting) {
-                            if (data.rol === 'admin') {
+                            if (data.role === 'admin' || data.rol === 'admin') {
                                 userGreeting.innerHTML = '🔑 Modo: <strong>Admin</strong>';
                             } else {
                                 userGreeting.innerHTML = `¡Hola, <strong>${data.nombre}</strong>!`;
                             }
                         }
-
-                        // ¡AQUÍ CAMBIA EL BOTÓN!
                         if (btnLoginNav) {
                             btnLoginNav.textContent = 'Cerrar Sesión';
-                            btnLoginNav.href = '/logout'; // Apunta a la ruta de destruir sesión
-                            btnLoginNav.style.color = '#e50914'; // Lo pone rojo
+                            btnLoginNav.href = '/logout';
+                            btnLoginNav.style.color = '#e50914';
                         }
                     }
                 })
                 .catch(err => console.error('Error al verificar la sesión:', err));
+
+            // 2. Carga Dinámica: Carrusel y Últimas 4 Películas
+            try {
+                const respuesta = await fetch('/api/cartelera');
+                const peliculas = await respuesta.json();
+
+                if (peliculas.length === 0) {
+                    carruselTira.innerHTML = '<p style="color: white; padding: 20px;">No hay banners disponibles</p>';
+                    gridEstrenos.innerHTML = '<p style="color: #aaa;">No hay películas programadas.</p>';
+                    return;
+                }
+
+                // --- LLENAR EL CARRUSEL (Todas las disponibles) ---
+                carruselTira.innerHTML = "";
+                peliculas.forEach(peli => {
+                    const img = document.createElement('img');
+                    img.src = peli.portada;
+                    img.alt = peli.titulo;
+                    carruselTira.appendChild(img);
+                });
+
+                // Reinicializar la lógica de tu carrusel del script.js si es necesario
+                if (typeof inicializarCarrusel === 'function') {
+                    inicializarCarrusel();
+                }
+
+                // --- LLENAR LA REJILLA INFERIOR (Solo las últimas 4 añadidas) ---
+                gridEstrenos.innerHTML = "";
+                
+                // Ordenamos por ID de mayor a menor (más recientes primero) y tomamos 4
+                const ultimasCuatro = [...peliculas]
+                    .sort((a, b) => b.id - a.id)
+                    .slice(0, 4);
+
+                ultimasCuatro.forEach(peli => {
+                    const article = document.createElement('article');
+                    article.className = 'movie-card';
+                    article.innerHTML = `
+                        <div class="poster-container">
+                            <img src="${peli.portada}" alt="${peli.titulo}">
+                            <span class="tag-estreno">NUEVO</span>
+                        </div>
+                        <div class="movie-info">
+                            <h3>${peli.titulo}</h3>
+                            <p class="meta">${peli.duracion} min | ${peli.genero || 'General'}</p>
+                        </div>
+                    `;
+                    gridEstrenos.appendChild(article);
+                });
+
+            } catch (error) {
+                console.error("❌ Error estructurando la página de inicio:", error);
+                gridEstrenos.innerHTML = '<p style="color: #e50914;">Error al mapear la cartelera.</p>';
+            }
         });
     </script>
-</body>
-</html>
 </body>
 </html>

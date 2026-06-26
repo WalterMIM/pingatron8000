@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - CineCentral</title>
+    <style>
+        body { font-family: sans-serif; background-color: #141414; color: white; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: #222; padding: 20px; border-radius: 8px; margin-bottom: 40px; }
+        h2 { color: #e50914; text-align: center; }
+        label { display: block; margin: 10px 0 5px; }
+        input, select, textarea { width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #e50914; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #b81d24; }
+        
+        /* Estilos del botón volver */
+        .btn-volver {
+            display: inline-block;
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-volver:hover {
+            background-color: #444;
+        }
+
+        /* Estilos de la tabla de gestión de estados */
+        .gestion-estados-section { max-width: 900px; margin: 0 auto; }
+        .tabla-gestion { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            background-color: #1e1e1e; 
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .tabla-gestion th, .tabla-gestion td { 
+            padding: 14px; 
+            text-align: left; 
+            border-bottom: 1px solid #333; 
+        }
+        .tabla-gestion th { 
+            background-color: #e50914; 
+            color: white;
+            font-weight: 500;
+        }
+        .badge { 
+            padding: 5px 10px; 
+            border-radius: 4px; 
+            font-weight: bold; 
+            font-size: 0.8em; 
+            display: inline-block;
+        }
+        .badge.cartelera { background-color: #2e7d32; color: white; }
+        .badge.estreno { background-color: #ef6c00; color: white; }
+        .badge.almacen { background-color: #455a64; color: white; }
+        
+        .select-gestion {
+            background-color: #2a2a2a;
+            color: white;
+            border: 1px solid #444;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+        .btn-aplicar-estado {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-aplicar-estado:hover {
+            background-color: #b81d24;
+        }
+    </style>
+</head>
+<body>
+
+    <div style="margin-bottom: 20px;">
+        <a href="/cartelera" class="btn-volver">← Volver a la Cartelera</a>
+    </div>
+
+    <div class="container">
+        <h2>🎬 Agregar Nueva Película</h2>
+        <form action="/api/admin/agregar-pelicula" method="POST" enctype="multipart/form-data">
+            
+            <label>Título de la Película:</label>
+            <input type="text" name="titulo" required placeholder="Ej: Avengers: Endgame">
+
+            <label>Duración (en minutos):</label>
+            <input type="number" name="duracion" required placeholder="Ej: 120">
+
+            <label>Género:</label>
+            <input type="text" name="genero" placeholder="Ej: Acción, Ciencia Ficción">
+
+            <label>Portada de la Película (Seleccionar Imagen):</label>
+            <input type="file" name="portada" accept="image/*" required>
+
+            <label>Asignar a Sala:</label>
+            <select name="sala_id" id="sala_select" required>
+                </select>
+
+            <label>Estado Inicial de la Película:</label>
+            <select name="estado" id="estado_select" required onchange="controlarSelectorSala()">
+                <option value="cartelera">En Cartelera (Sala Activa)</option>
+                <option value="estreno">Próximo Estreno (Sin Sala)</option>
+            </select>
+
+            <label>Sinopsis:</label>
+            <textarea name="sinopsis" rows="4" placeholder="Breve descripción..."></textarea>
+
+            <button type="submit">Calcular Funciones y Guardar</button>
+        </form>
+    </div>
+
+    <hr style="border: 1px solid #333; margin: 40px auto; max-width: 900px;">
+
+    <section class="gestion-estados-section">
+        <div class="section-header">
+            <h2>⚙️ Gestión del Ciclo de Vida de las Películas</h2>
+            <p style="color: #aaa; margin-bottom: 20px;">Promueve películas a cartelera, muévelas a estrenos o escóndelas en el almacén.</p>
+        </div>
+
+        <table class="tabla-gestion">
+            <thead>
+                <tr>
+                    <th>Película</th>
+                    <th>Estado Actual</th>
+                    <th>Cambiar Estado a:</th>
+                </tr>
+            </thead>
+            <tbody id="lista-peliculas-gestion">
+                <tr>
+                    <td colspan="3" style="color: #aaa; text-align: center;">Cargando películas...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <script>
+        // 1. Deshabilitar selector de sala si se escoge "Próximo Estreno" al crear
+        function controlarSelectorSala() {
+            const estado = document.getElementById('estado_select').value;
+            const selectSalas = document.getElementById('sala_select');
+            
+            if (estado === 'estreno') {
+                selectSalas.value = "";
+                selectSalas.disabled = true;
+                selectSalas.required = false;
+            } else {
+                selectSalas.disabled = false;
+                selectSalas.required = true;
+            }
+        }
+
+        // 2. Mostrar u ocultar el sub-selector de salas dentro de la tabla de gestión inferior
+        window.controlarSubSelectorSala = function(elementoSelect) {
+            const selectorSala = elementoSelect.nextElementSibling;
+            if (elementoSelect.value === 'cartelera') {
+                selectorSala.style.display = "block";
+                selectorSala.required = true;
+            } else {
+                selectorSala.style.display = "none";
+                selectorSala.required = false;
+                selectorSala.value = "";
+            }
+        }
+
+        // 3. Procesos Asíncronos al Cargar el DOM
+        document.addEventListener("DOMContentLoaded", async () => {
+            const selectSalasForm = document.getElementById("sala_select");
+            const tbodyGestion = document.getElementById("lista-peliculas-gestion");
+
+            // --- CARGAR SALAS EN EL FORMULARIO SUPERIOR ---
+            try {
+                const respuestaSalas = await fetch('/api/salas');
+                const salas = await respuestaSalas.json();
+
+                if (salas.length === 0) {
+                    selectSalasForm.innerHTML = '<option value="">❌ No hay salas en la BD</option>';
+                } else {
+                    selectSalasForm.innerHTML = "";
+                    salas.forEach(sala => {
+                        const option = document.createElement("option");
+                        option.value = sala.id;
+                        option.textContent = sala.nombre;
+                        selectSalasForm.appendChild(option);
+                    });
+                }
+                
+                // --- CARGAR TABLA DE GESTIÓN INFERIOR ---
+                let opcionesSalasTabla = salas.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+                
+                const respuestaPelis = await fetch('/api/admin/todas-las-peliculas');
+                const peliculas = await respuestaPelis.json();
+
+                if (peliculas.length === 0) {
+                    tbodyGestion.innerHTML = '<tr><td colspan="3" style="color: #aaa; text-align: center;">No hay películas en el sistema.</td></tr>';
+                    return;
+                }
+
+                tbodyGestion.innerHTML = "";
+                peliculas.forEach(peli => {
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td><strong>${peli.titulo}</strong></td>
+                        <td><span class="badge ${peli.estado}">${peli.estado.toUpperCase()}</span></td>
+                        <td>
+                            <form action="/api/admin/cambiar-estado" method="POST" style="display: flex; gap: 12px; align-items: center; margin: 0;">
+                                <input type="hidden" name="pelicula_id" value="${peli.id}">
+                                
+                                <select name="nuevo_estado" class="select-gestion" required onchange="controlarSubSelectorSala(this)">
+                                    <option value="">-- Cambiar a --</option>
+                                    <option value="cartelera">Promover a Cartelera</option>
+                                    <option value="estreno">Mover a Próximo Estreno</option>
+                                    <option value="almacen">Mandar al Almacén</option>
+                                </select>
+                                
+                                <select name="sala_id" class="select-gestion" style="display: none;">
+                                    <option value="">-- Seleccionar Sala --</option>
+                                    ${opcionesSalasTabla}
+                                </select>
+                                
+                                <button type="submit" class="btn-aplicar-estado" style="width: auto;">Aplicar</button>
+                            </form>
+                        </td>
+                    `;
+                    tbodyGestion.appendChild(tr);
+                });
+
+            } catch (error) {
+                console.error("❌ Error de comunicación con las APIs:", error);
+                tbodyGestion.innerHTML = '<tr><td colspan="3" style="color: #e50914; text-align: center;">Error al conectar con el servidor MySQL.</td></tr>';
+            }
+        });
+    </script>
+</body>
+</html>
