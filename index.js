@@ -216,6 +216,8 @@ app.post('/api/admin/agregar-pelicula', verificarAdmin, upload.single('portada')
             });
         });
     });
+
+
 });
 
 // API POST CAMBIAR ESTADO
@@ -273,6 +275,60 @@ app.post('/api/admin/cambiar-estado', verificarAdmin, (req, res) => {
 app.get('/api/admin/todas-las-peliculas', verificarAdmin, (req, res) => {
     conexion.query('SELECT id, titulo, estado FROM peliculas ORDER BY id DESC', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
+        res.json(results);
+    });
+});
+
+
+//  AGREGAR COMBO
+app.post('/api/admin/agregar-combo', verificarAdmin, upload.single('imagenCombo'), (req, res) => {
+    if (!req.file) return res.status(400).send('Debes seleccionar una imagen para el combo.');
+
+    // 1. Extraemos los datos después de que Multer procesó el formulario
+    const { nombre, precio, descripcion } = req.body;
+    
+    // 2. Forzamos la conversión a entero. Si por alguna razón llega undefined, ponemos 0
+    const stock = req.body.stock ? parseInt(req.body.stock, 10) : 0; 
+    const imagenURL = '/' + req.file.filename;
+
+    // 3. Insertar en la Base de Datos
+    const query = 'INSERT INTO combos (nombre, descripcion, precio, imagen, stock) VALUES (?, ?, ?, ?, ?)';
+    conexion.query(query, [nombre, descripcion, parseFloat(precio), imagenURL, stock], (err, result) => {
+        if (err) {
+            console.error("❌ Error al guardar el combo:", err);
+            return res.status(500).send('Error interno al guardar el combo.');
+        }
+
+        res.send(`
+            <div style="text-align: center; font-family: sans-serif; margin-top: 50px; color: white; background: #141414; padding: 20px;">
+                <h1 style="color: #4CAF50;">¡Combo Guardado Exitosamente! 🍿🥤</h1>
+                <p>El combo <strong>${nombre}</strong> ya está disponible con un stock de ${stock} unidades.</p>
+                <a href="/carameleria" style="color: #e50914; font-weight: bold; text-decoration: none;">Volver a Caramelería</a>
+            </div>
+        `);
+    });
+});
+
+// 🗑️ 2. NUEVA RUTA POST: ELIMINAR COMBO (ADMIN)
+app.post('/api/admin/eliminar-combo', verificarAdmin, (req, res) => {
+    const { combo_id } = req.body;
+
+    const query = 'DELETE FROM combos WHERE id = ?';
+    conexion.query(query, [combo_id], (err, result) => {
+        if (err) {
+            console.error("❌ Error al eliminar el combo:", err);
+            return res.status(500).json({ error: 'No se pudo eliminar el combo' });
+        }
+        
+        // Redirige de vuelta a la caramelería para ver el cambio de inmediato
+        res.redirect('/carameleria');
+    });
+});
+
+// 🍿 API GET: OBTENER TODOS LOS COMBOS (PÚBLICA - Para tu sección de caramelería)
+app.get('/api/combos', (req, res) => {
+    conexion.query('SELECT * FROM combos ORDER BY id DESC', (err, results) => {
+        if (err) return res.status(500).json({ error: 'Error al obtener los combos' });
         res.json(results);
     });
 });

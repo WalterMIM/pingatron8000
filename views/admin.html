@@ -120,6 +120,8 @@
         </form>
     </div>
 
+
+
     <hr style="border: 1px solid #333; margin: 40px auto; max-width: 900px;">
 
     <section class="gestion-estados-section">
@@ -143,6 +145,39 @@
             </tbody>
         </table>
     </section>
+
+    <section class="admin-section">
+    <h2>Agregar Nuevo Combo de Caramelería</h2>
+    <form action="/api/admin/agregar-combo" method="POST" enctype="multipart/form-data" class="admin-form">
+        
+        <div class="form-group">
+            <label for="nombre">Nombre del Combo:</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Ej: Combo Pareja" required>
+        </div>
+
+        <div class="form-group">
+            <label for="precio">Precio ($):</label>
+            <input type="number" id="precio" name="precio" step="0.01" placeholder="Ej: 12.50" required>
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">¿Qué incluye? (Descripción):</label>
+            <textarea id="descripcion" name="descripcion" rows="4" placeholder="Ej: 1 Cotufa grande, 2 refrescos medianos y 1 ración de tequeños." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="imagenCombo">Imagen del Combo:</label>
+            <input type="file" id="imagenCombo" name="imagenCombo" accept="image/*" required>
+        </div>
+
+        <div class="form-group">
+    <label for="stock">Cantidad en Almacén (Disponibilidad):</label>
+    <input type="number" id="stock" name="stock" min="0" placeholder="Ej: 50" required>
+</div>
+
+        <button type="submit" class="btn-submit">Guardar Combo</button>
+    </form>
+</section>
 
     <script>
         // 1. Deshabilitar selector de sala si se escoge "Próximo Estreno" al crear
